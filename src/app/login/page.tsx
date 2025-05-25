@@ -29,18 +29,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="px-4 lg:px-6 h-16 flex items-center border-b">
-        <Link href="/" className="flex items-center justify-center">
-          <Car className="h-8 w-8 text-blue-600" />
-          <span className="ml-2 text-xl font-bold text-gray-900">Carla</span>
-        </Link>
-        <nav className="ml-auto">
-          <Link href="/register" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Need an account? Sign up
-          </Link>
-        </nav>
-      </header>
+     
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-12 bg-gray-50">
