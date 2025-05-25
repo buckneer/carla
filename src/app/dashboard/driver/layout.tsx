@@ -1,26 +1,12 @@
-import React from "react";
-import Driver from "@/components/common/Sidebar/Driver";
-import { Inter } from "next/font/google";
-import "../../globals.css"; // make sure global styles are still loaded
+// app/dashboard/driver/layout.tsx
+import DriverSidebar from "@/components/common/Sidebar/Driver";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata = {
-  title: "Dashboard",
-  description: "Dashboard area",
-};
-
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DriverLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-gray-50`}>
-        <div className="flex h-screen">
-          <Driver />
-          <div className="flex-1 overflow-auto">
-            {children}
-          </div>
-        </div>
-      </body>
-    </html>
+    <div className="flex h-screen">
+      <DriverSidebar />
+      <main className="flex-1 overflow-auto">{children}</main>
+    </div>
   );
 }
+  

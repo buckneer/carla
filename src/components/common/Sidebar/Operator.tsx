@@ -1,3 +1,4 @@
+"use client";
 import { BarChart3, Car, Home, LogOut, Settings, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
