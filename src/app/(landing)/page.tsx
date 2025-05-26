@@ -20,38 +20,23 @@ import ROI from "@/components/home/ROI";
 import FAQ from "@/components/home/FAQ";
 import CTA from "@/components/home/CTA";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+
+
+
 	return (
 		<div className="flex flex-col min-h-screen">
 			
+
 			<Hero />
-
-			{/* Social Proof */}
 			<SocialProof />
-
-			{/* How It Works Section */}
 			<HowItWorks />
-
-			{/* Benefits Section */}
 			<Benefits />
-
-			{/* Testimonials Section */}
 			<Testimonials />
-
-			{/* Technology Showcase */}
 			<Technology />			
-
-			{/* ROI Section */}
 			<ROI />
-
-			{/* FAQ Section */}
 			<FAQ />
-
-			{/* CTA Section */}
 			<CTA />			
-
-			{/* Footer */}
-		
 		</div>
 	);
 }

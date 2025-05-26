@@ -8,7 +8,6 @@ const Navbar = () => {
 			<Link href="/" className="flex items-center justify-center">
 				<div className="relative">
 					<Car className="h-8 w-8 text-blue-600" />
-					<div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
 				</div>
 				<span className="ml-2 text-xl font-bold text-gray-900">Carla</span>
 			</Link>
