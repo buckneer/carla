@@ -1,5 +1,4 @@
 import { createClient } from "@/utils/supabase/server";
-import { NextResponse } from "next/server";
 
 export async function GET() {
 	// Initialize server‐side Supabase (reads the cookie)
@@ -7,11 +6,11 @@ export async function GET() {
 
 	// Grab the current session
 	const {
-		data: { session },
-	} = await supabase.auth.getSession();
+		data: { user },
+	} = await supabase.auth.getUser();
 
 	// If no session, clear any cookies and return null
-	if (!session) {
+	if (!user) {
 		return new Response(JSON.stringify({ user: null, role: null }), {
 			status: 200,
 			headers: response.headers,
@@ -19,13 +18,12 @@ export async function GET() {
 	}
 
 	// Otherwise, fetch the role
-	const userId = session.user.id;
-	const { data: userRow } = await supabase.from("users").select("role").eq("id", userId).single();
+	const userId = user.id;
+	const { data: userRow } = await supabase.from("users").select().eq("id", userId).single();
 
 	return new Response(
 		JSON.stringify({
-			user: session.user,
-			role: userRow?.role ?? null,
+			user: userRow,
 		}),
 		{
 			status: 200,

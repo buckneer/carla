@@ -55,24 +55,8 @@ export default function RegisterPage() {
 
 	return (
 		<div className="min-h-screen flex flex-col">
-			{/* Header */}
-			<header className="px-4 lg:px-6 h-16 flex items-center border-b">
-				<Link href="/" className="flex items-center justify-center">
-					<Car className="h-8 w-8 text-blue-600" />
-					<span className="ml-2 text-xl font-bold text-gray-900">Carla</span>
-				</Link>
-				<nav className="ml-auto">
-					<Link
-						href="/login"
-						className="text-sm font-medium hover:text-blue-600 transition-colors"
-					>
-						Already have an account? Sign in
-					</Link>
-				</nav>
-			</header>
-
 			{/* Main Content */}
-			<div className="flex-1 flex items-center justify-center px-4 py-12 bg-gray-50">
+			<div className="flex-1 flex items-center justify-center px-4 py-24 bg-gray-50">
 				<div className="w-full max-w-md bg-white rounded-lg border border-gray-200 shadow-sm">
 					<div className="p-6 space-y-1">
 						<h2 className="text-2xl font-bold text-center">Create your account</h2>

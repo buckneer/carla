@@ -2,22 +2,24 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { User } from "@/utils/supabase/types";
 
 type AuthContextType = {
-	user: any; // you can refine this to Supabase's User type
-	role: "driver" | "operator" | null;
+	user: User // you can refine this to Supabase's User type
+	// role: "driver" | "operator" | null;
 	loading: boolean;
 	signIn: (email: string, password: string) => Promise<void>;
 	signOut: () => Promise<void>;
 	refreshUser: () => Promise<void>;
 };
 
+// Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const router = useRouter();
 	const [user, setUser] = useState<any>(null);
-	const [role, setRole] = useState<"driver" | "operator" | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	// 1) Load initial session & role
@@ -26,7 +28,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			const res = await fetch("/api/auth/session");
 			const { user, role } = await res.json();
 			setUser(user);
-			setRole(role);
 			setLoading(false);
 		};
 		init();
@@ -47,9 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		}
 		// Refresh context from server
 		const sess = await fetch("/api/auth/session");
-		const { user, role } = await sess.json();
+		const { user } = await sess.json();
 		setUser(user);
-		setRole(role);
 		setLoading(false);
 	};
 
@@ -58,7 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		// call your logout route to clear HttpOnly cookie
 		await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
 		setUser(null);
-		setRole(null);
 		setLoading(false);
 		router.push("/login");
 	};
@@ -66,14 +65,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const refreshUser = async () => {
 		setLoading(true);
 		const res = await fetch("/api/auth/session");
-		const { user, role } = await res.json();
+		const { user } = await res.json();
+		console.log(user);
 		setUser(user);
-		setRole(role);
 		setLoading(false);
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, role, loading, signIn, signOut, refreshUser }}>
+		<AuthContext.Provider value={{ user, loading, signIn, signOut, refreshUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

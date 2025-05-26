@@ -49,8 +49,6 @@ export default function LoginPage() {
 				>
 					<h2 className="text-2xl font-bold text-center">Welcome back</h2>
 
-				
-
 					{/* Email & Password */}
 					<div>
 						<label htmlFor="email" className="text-sm font-medium text-gray-700">

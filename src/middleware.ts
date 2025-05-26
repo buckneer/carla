@@ -32,24 +32,24 @@ export async function middleware(req: NextRequest) {
 
 	// 2) Read the current session
 	const {
-		data: { session },
-	} = await supabase.auth.getSession();
+		data: { user },
+	} = await supabase.auth.getUser();
 
 	const url = req.nextUrl.clone();
 	const { pathname } = url;
 
 	// 3) Unauthenticated → block /dashboard/*
-	if (!session && pathname.startsWith("/dashboard")) {
+	if (!user && pathname.startsWith("/dashboard")) {
 		url.pathname = "/login";
 		return NextResponse.redirect(url);
 	}
 
 	// 4) If authenticated, load their role
-	if (session) {
+	if (user) {
 		const { data: userRow } = await supabase
 			.from("users")
 			.select("role")
-			.eq("id", session.user.id)
+			.eq("id", user.id)
 			.single();
 
 		const role = userRow?.role;

@@ -14,7 +14,9 @@ export default function DashboardRootLayout({ children }: { children: React.Reac
 	return (
 		<html lang="en">
 			<body className={`${inter.className} bg-gray-50`}>
-				{children}
+				<AuthProvider>
+					{children}
+				</AuthProvider>
 			</body>
 		</html>
 	);
