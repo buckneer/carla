@@ -1,3 +1,5 @@
+import { IconNode, LucideIcon } from "lucide-react";
+
 // Database types
 export interface User {
 	id: string;
@@ -42,6 +44,18 @@ export interface Facility {
 	updated_at: string;
 }
 
+export interface UserFacility {
+	id: string;
+	user_id: string;
+	facility_id: string;
+	role: "operator" | "driver";
+	status: "active" | "inactive" | "pending" | "rejected";
+	approved_by?: string;
+	approved_at?: string;
+	created_at: string;
+	updated_at: string;
+}
+
 export interface ParkingSession {
 	id: string;
 	vehicle_id: string;
@@ -73,4 +87,12 @@ export interface UserSettings {
 	timezone: string;
 	created_at: string;
 	updated_at: string;
+}
+
+export type IconName = "Home" | "Users" | "BarChart3" | "Settings" | "Car";
+
+export interface DashboardRoute {
+	href: string;
+	label: string;
+	icon: IconName;
 }

@@ -15,8 +15,8 @@ export interface SidebarProps {
 
 const SettingsSidebar: React.FC<SidebarProps> = ({ tabs, activeTab, onTabClick }) => {
 	return (
-		<div className="w-full md:w-64">
-			<nav className="flex flex-wrap flex-row gap-2 md:flex-col md:gap-1">
+		<div className="w-full">
+			<nav className="flex flex-wrap gap-2">
 				{tabs.map(tab => {
 					const Icon = tab.icon;
 					const isActive = activeTab === tab.id;
@@ -25,16 +25,14 @@ const SettingsSidebar: React.FC<SidebarProps> = ({ tabs, activeTab, onTabClick }
 							key={tab.id}
 							onClick={() => onTabClick(tab.id)}
 							className={`
-                flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
-                basis-1/2 sm:basis-1/3 md:basis-full
-                ${
-					isActive
-						? "bg-blue-100 text-blue-700"
-						: "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-				}
-              `}
+								flex items-center w-full sm:w-auto px-4 py-3 text-sm font-medium rounded-md transition-colors
+								${isActive
+									? "bg-blue-100 text-blue-700"
+									: "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+								}
+							`}
 						>
-							<Icon className="h-5 w-5 mr-3" />
+							<Icon className="h-5 w-5 mr-2" />
 							<span className="whitespace-nowrap">{tab.label}</span>
 						</button>
 					);

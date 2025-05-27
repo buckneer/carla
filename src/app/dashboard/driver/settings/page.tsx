@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import {
 	Save,
 	Bell,
@@ -8,11 +6,6 @@ import {
 	Shield,
 	Car,
 	CreditCard,
-	AlertTriangle,
-	Plus,
-	Edit2,
-	Trash2,
-	Check,
 } from "lucide-react";
 import Profile from "@/components/settings/driver/Profile";
 import Notifications from "@/components/settings/driver/Notifications";

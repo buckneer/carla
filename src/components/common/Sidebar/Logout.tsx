@@ -12,7 +12,7 @@ import React from 'react';
 
 
 	return (
-		<div className="absolute bottom-0 w-full p-3">
+		<div className="w-full p-3">
 			<button
 				onClick={handleSignOut}
 				className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors w-full"

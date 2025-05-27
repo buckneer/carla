@@ -19,7 +19,7 @@ const SettingsLayout: React.FC<SettingsLayoutProps> = ({ items, initialTab }) =>
 	const activeItem = items.find(item => item.id === activeTab);
 
 	return (
-		<div className="p-8 flex flex-col md:flex-row gap-8">
+		<div className="p-8 flex flex-col  gap-8">
 			<SettingsSidebar tabs={tabs} activeTab={activeTab} onTabClick={setActiveTab} />
 			<div className="flex-1">
 				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
