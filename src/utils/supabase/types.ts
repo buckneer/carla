@@ -28,7 +28,7 @@ export interface Vehicle {
 }
 
 export interface Facility {
-	id: string;
+	id?: string;
 	name: string;
 	address: string;
 	contact_email?: string;

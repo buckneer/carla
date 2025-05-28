@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Bell, Shield, Camera, Clock, DollarSign, Users, AlertTriangle } from "lucide-react";
-import SettingsSidebar from "@/components/settings/SettingsSidebar";
+import { Save, Bell, Shield, Camera, Clock, DollarSign, Users } from "lucide-react";
 import SettingsLayout from "@/components/settings/SettingsLayout";
 import General from "@/components/settings/operator/General";
 import System from "@/components/settings/operator/System";
@@ -10,8 +9,12 @@ import Pricing from "@/components/settings/operator/Pricing";
 import Notifications from "@/components/settings/operator/Notifications";
 import Security from "@/components/settings/operator/Security";
 import Hours from "@/components/settings/operator/Hours";
+import { useToast } from "@/components/context/ToastContext";
 
 export default function OperatorSettingsPage() {
+
+	const { addToast } = useToast();
+
 	const [settings, setSettings] = useState({
 		// General Settings
 		facilityName: "Downtown Plaza Parking",
@@ -53,12 +56,11 @@ export default function OperatorSettingsPage() {
 		},
 	});
 
-	const [activeTab, setActiveTab] = useState("general");
 
 	const handleSave = () => {
 		// Handle save logic here
-		console.log("Settings saved:", settings);
-		alert("Settings saved successfully!");
+		// console.log("Settings saved:", settings);
+		addToast("success", "Settings saved successfully");
 	};
 
 	const tabs = [

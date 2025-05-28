@@ -1,7 +1,8 @@
 // app/dashboard/layout.tsx
 import { Inter } from "next/font/google";
 import "../globals.css";
-import { AuthProvider } from "@/components/AuthContext";
+import { AuthProvider } from "@/components/context/AuthContext";
+import { ToastProvider } from "@/components/context/ToastContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +16,9 @@ export default function DashboardRootLayout({ children }: { children: React.Reac
 		<html lang="en">
 			<body className={`${inter.className} bg-gray-50`}>
 				<AuthProvider>
-					{children}
+					<ToastProvider>
+						{children}
+					</ToastProvider>
 				</AuthProvider>
 			</body>
 		</html>

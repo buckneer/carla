@@ -1,4 +1,4 @@
-import { useAuth } from '@/components/AuthContext';
+import { useAuth } from '@/components/context/AuthContext';
 import { LogOut } from 'lucide-react';
 import React from 'react';
 

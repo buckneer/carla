@@ -1,53 +1,20 @@
 "use client";
 import { Facility } from "@/utils/supabase/types";
 import { Building2, Edit, Mail, MapPin, Phone, Plus, Settings, Users } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FacilityItem from "./facility/FacilityItem";
+import { useToast } from "@/components/context/ToastContext";
 
 interface FacilityWithStats extends Facility {
 	user_count?: number;
 }
 
-// Mock data
-const mockFacilities: FacilityWithStats[] = [
-	{
-		id: "facility-1",
-		name: "Downtown Plaza Parking",
-		address: "123 Main Street, Downtown",
-		contact_email: "admin@downtownplaza.com",
-		contact_phone: "+1 (555) 123-4567",
-		operator_id: "user-2",
-		hourly_rate: 4.5,
-		daily_max_rate: 25.0,
-		monthly_rate: 150.0,
-		recognition_sensitivity: "medium",
-		auto_approval: false,
-		max_vehicles_per_user: 3,
-		user_count: 45,
-		created_at: "2024-01-10T00:00:00Z",
-		updated_at: "2024-01-10T00:00:00Z",
-	},
-	{
-		id: "facility-2",
-		name: "Mall Parking Center",
-		address: "456 Shopping Blvd, Mall District",
-		contact_email: "parking@mall.com",
-		contact_phone: "+1 (555) 234-5678",
-		operator_id: "user-2",
-		hourly_rate: 3.0,
-		daily_max_rate: 20.0,
-		monthly_rate: 120.0,
-		recognition_sensitivity: "high",
-		auto_approval: true,
-		max_vehicles_per_user: 2,
-		user_count: 32,
-		created_at: "2024-01-12T00:00:00Z",
-		updated_at: "2024-01-12T00:00:00Z",
-	},
-];
+// TODO do caching here, so it doesn't rerender every click or change.
 
 function General() {
-	const [facilities, setFacilities] = useState<FacilityWithStats[]>(mockFacilities);
+	const { addToast } = useToast();
+
+	const [facilities, setFacilities] = useState<FacilityWithStats[]>([]);
 	const [showAddForm, setShowAddForm] = useState(false);
 	const [editingFacility, setEditingFacility] = useState<string | null>(null);
 	const [formData, setFormData] = useState({
@@ -60,62 +27,106 @@ function General() {
 		monthly_rate: "",
 	});
 	const [submitting, setSubmitting] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
+
+	// Fetch facilities on mount
+	useEffect(() => {
+		const fetchFacilities = async () => {
+			try {
+				const res = await fetch("/api/facility");
+				if (!res.ok) {
+					const err = await res.json();
+					throw new Error(err.error || "Failed to fetch facilities");
+				}
+				const data: FacilityWithStats[] = await res.json();
+				setFacilities(data);
+			} catch (err: any) {
+				console.error("Error loading facilities:", err);
+				addToast("danger", "Error loading facilities");
+				setError(err.message);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchFacilities();
+	}, []);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setSubmitting(true);
 		setError("");
 
-		try {
-			// Simulate API call
-			await new Promise(resolve => setTimeout(resolve, 1000));
+		const payload = {
+			name: formData.name,
+			address: formData.address,
+			contact_email: formData.contact_email || undefined,
+			contact_phone: formData.contact_phone || undefined,
+			hourly_rate: parseFloat(formData.hourly_rate),
+			daily_max_rate: parseFloat(formData.daily_max_rate),
+			monthly_rate: parseFloat(formData.monthly_rate),
+		};
 
-			const facilityData = {
-				name: formData.name,
-				address: formData.address,
-				contact_email: formData.contact_email || undefined,
-				contact_phone: formData.contact_phone || undefined,
-				hourly_rate: Number.parseFloat(formData.hourly_rate),
-				daily_max_rate: Number.parseFloat(formData.daily_max_rate),
-				monthly_rate: Number.parseFloat(formData.monthly_rate),
-			};
+		try {
+			let response;
 
 			if (editingFacility) {
-				// Update existing facility
-				setFacilities(
-					facilities.map(f =>
-						f.id === editingFacility
-							? {
-									...f,
-									...facilityData,
-									updated_at: new Date().toISOString(),
-							  }
-							: f
-					)
-				);
+				// PUT to update existing facility
+				response = await fetch(`/api/facility/${editingFacility}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload),
+				});
 			} else {
-				// Create new facility
-				const newFacility: FacilityWithStats = {
-					id: `facility-${Date.now()}`,
-					...facilityData,
-					operator_id: "user-2",
-					recognition_sensitivity: "medium",
-					auto_approval: false,
-					max_vehicles_per_user: 3,
-					user_count: 0,
-					created_at: new Date().toISOString(),
-					updated_at: new Date().toISOString(),
-				};
-				setFacilities([...facilities, newFacility]);
+				// POST to create new facility
+				response = await fetch(`/api/facility`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload),
+				});
 			}
 
+			if (!response.ok) {
+				const err = await response.json();
+				addToast("danger", `Error ${editingFacility ? "editing" : "creating"} facility`);
+				throw new Error(err.error || "Unexpected error");
+			}
+
+			const facility: FacilityWithStats = await response.json();
+
+			if (editingFacility) {
+				setFacilities(prev => prev.map(f => (f.id === facility.id ? facility : f)));
+			} else {
+				setFacilities(prev => [...prev, facility]);
+			}
+
+			addToast("success", "Changes successfully saved");
 			handleCancel();
-		} catch (error: any) {
-			console.error("Error saving facility:", error);
-			setError(error.message || "Failed to save facility");
+		} catch (err: any) {
+			console.error("Error saving facility:", err);
+			addToast("danger", "Error saving facility");
+			setError(err.message || "Failed to save facility");
 		} finally {
 			setSubmitting(false);
+		}
+	};
+
+	const handleDelete = async (id: string) => {
+		if (!confirm("Are you sure you want to delete this facility?")) return;
+		try {
+			const res = await fetch(`/api/facility/${id}`, { method: "DELETE" });
+			if (!res.ok) {
+				const err = await res.json();
+				addToast('danger', "Failed to delete facility")
+				throw new Error(err.error || "Failed to delete");
+			}
+			// remove from local state
+			addToast('success', "Facility deleted successfully");
+			setFacilities(prev => prev.filter(f => f.id !== id));
+		} catch (e: any) {
+			console.error("Delete failed:", e);
+			addToast('danger', "Failed to delete facility")
+			setError(e.message || "Delete failed");
 		}
 	};
 
@@ -129,7 +140,7 @@ function General() {
 			daily_max_rate: facility.daily_max_rate.toString(),
 			monthly_rate: facility.monthly_rate.toString(),
 		});
-		setEditingFacility(facility.id);
+		setEditingFacility(facility.id!);
 		setShowAddForm(true);
 	};
 
@@ -381,7 +392,12 @@ function General() {
 					</div>
 				) : (
 					facilities.map(facility => (
-						<FacilityItem key={facility.id} facility={facility} handleEdit={handleEdit} />
+						<FacilityItem
+							key={facility.id}
+							facility={facility}
+							handleEdit={handleEdit}
+							handleDelete={handleDelete}
+						/>
 					))
 				)}
 			</div>
