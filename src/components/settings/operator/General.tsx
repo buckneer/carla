@@ -9,7 +9,7 @@ interface FacilityWithStats extends Facility {
 	user_count?: number;
 }
 
-// TODO do caching here, so it doesn't rerender every click or change.
+
 
 function General() {
 	const { addToast } = useToast();
@@ -34,7 +34,13 @@ function General() {
 	useEffect(() => {
 		const fetchFacilities = async () => {
 			try {
-				const res = await fetch("/api/facility");
+				const res = await fetch("/api/facility", {
+					next: {
+						tags: ['facilities', 'facilities-general'],
+						revalidate: 3600
+					}
+				});
+				
 				if (!res.ok) {
 					const err = await res.json();
 					throw new Error(err.error || "Failed to fetch facilities");
